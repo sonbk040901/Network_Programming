@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "unistd.h": "c",
+        "stdio_ext.h": "c",
+        "dllist.h": "c",
+        "fields.h": "c",
+        "queue.h": "c",
+        "user.h": "c",
+        "typeinfo": "c"
+    },
+    "git.ignoreLimitWarning": true,
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
+}

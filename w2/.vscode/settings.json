@@ -1,0 +1,11 @@
+{
+    "git.ignoreLimitWarning": true,
+    "files.associations": {
+        "socket.h": "c",
+        "in.h": "c",
+        "internet": "c",
+        "inet.h": "c",
+        "types.h": "c",
+        "netdb.h": "c"
+    }
+}
