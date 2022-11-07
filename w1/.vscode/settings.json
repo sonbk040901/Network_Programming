@@ -9,5 +9,6 @@
         "typeinfo": "c"
     },
     "git.ignoreLimitWarning": true,
-    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+    "C_Cpp.errorSquiggles": "Disabled"
 }
