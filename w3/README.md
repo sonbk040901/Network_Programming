@@ -1,4 +1,4 @@
-# <h1 align="center">BÀI TẬP TUẦN 1 – IT4062- Mã lớp: 135243</h1>
+# <h1 align="center">BÀI TẬP TUẦN 3 – IT4062- Mã lớp: 135243</h1>
 
 ## Cách thực thi mã nguồn?
 
