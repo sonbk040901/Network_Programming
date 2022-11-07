@@ -9,7 +9,14 @@
 #include "jval.h"
 #include "queue.h"
 #include "user.h"
-#define MAX_CHOSE 6
+#include <sys/socket.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <ctype.h>
+#define MAX_CHOSE 8
 #define USERS_DB "users.txt"
 void menu(void)
 {
@@ -22,25 +29,29 @@ void menu(void)
 	printf("\t\t\t|  4  |   %-45s|\n", "Search");
 	printf("\t\t\t|  5  |   %-45s|\n", "Change password");
 	printf("\t\t\t|  6  |   %-45s|\n", "Sign out");
+	printf("\t\t\t|  7  |   %-45s|\n", "Homepage with domain name");
+	printf("\t\t\t|  8  |   %-45s|\n", "Homepage with IP address");
 	printf("\t\t\t|======================================================|\n");
 }
 /*Must be free return value when done*/
 char *prompt(char *message);
+struct hostent *gethost(char *, int);
 int main(void)
 {
 	int chose;
 	Dllist list = makUsersList(USERS_DB);
 	User user = NULL;
-	char *username, *password, *activationCode;
+	char *username, *password, *activationCode, *homepage;
 	do
 	{
 		menu();
-		printf("Your choice (1-6, other to quit): ");
+		printf("Your choice (1-8, other to quit): ");
 		chose = scanf("%d", &chose) == 0 ? 0 : chose;
 		__fpurge(stdin);
 		switch (chose)
 		{
 		case 1:
+		{
 			username = prompt("Username: ");
 			if (existsUser(list, username))
 			{
@@ -49,13 +60,16 @@ int main(void)
 				break;
 			}
 			password = prompt("Password: ");
-			addUser(list, newUser(username, password, idle));
+			homepage = prompt("Homepage: ");
+			addUser(list, newUser(username, password, homepage, idle));
 			puts("Successful registration\nActivation required\n");
-			export(list, USERS_DB);
+			exportFile(list, USERS_DB);
 			free(username);
 			free(password);
 			break;
+		}
 		case 2:
+		{
 			int count = 0;
 			do
 			{
@@ -108,7 +122,7 @@ int main(void)
 			free(password);
 			if (count >= 3)
 			{
-				export(list, USERS_DB);
+				exportFile(list, USERS_DB);
 				break;
 			}
 
@@ -134,10 +148,12 @@ int main(void)
 				}
 				free(activationCode);
 			} while (1);
-			export(list, USERS_DB);
+			exportFile(list, USERS_DB);
 			user = NULL;
 			break;
+		}
 		case 3:
+		{
 			if (user)
 			{
 				printf("You must logout current user!!!\n");
@@ -195,9 +211,11 @@ int main(void)
 			} while (1);
 			free(username);
 			free(password);
-			export(list, USERS_DB);
+			exportFile(list, USERS_DB);
 			break;
+		}
 		case 4:
+		{
 			if (!user)
 			{
 				puts("Account is not sign in");
@@ -218,17 +236,20 @@ int main(void)
 																						   : "idle");
 			}
 			break;
+		}
 		case 5:
+		{
 			if (!user)
 			{
 				puts("Account is not sign in");
 				break;
 			}
-			printf("Username: %s\n", user->username);
+			// printf("Username: %s\n", user->username);
+			username = prompt("Username: ");
 			password = prompt("Password: ");
-			if (!checkPassword(user, password))
+			if (strcmp(user->username, username) || !checkPassword(user, password))
 			{
-				puts("Current password is incorrect. Please try again");
+				puts("Current username or password is incorrect. Please try again");
 				free(password);
 				break;
 			}
@@ -237,16 +258,18 @@ int main(void)
 			setPassword(user, password);
 			puts("Password is changed");
 			free(password);
-			export(list, USERS_DB);
+			exportFile(list, USERS_DB);
 			break;
+		}
 		case 6:
+		{
 			if (!user)
 			{
 				puts("Account is not sign in");
 				break;
 			}
 			username = prompt("Username: ");
-			result = existsUser(list, username);
+			User result = existsUser(list, username);
 			if (!result)
 			{
 				puts("Cannot find account");
@@ -259,6 +282,65 @@ int main(void)
 			}
 			user = NULL;
 			break;
+		}
+		case 7:
+		{
+			if (!user)
+			{
+				puts("Account is not sign in");
+				break;
+			}
+			struct hostent *he;
+			he = gethost(user->homepage, 1);
+			if (he == (void *)1)
+			{
+				puts("Wrong IP format");
+				break;
+			}
+			if (he == NULL)
+			{
+				puts("Not found information");
+				break;
+			}
+			printf("Info of IP %s:\n", user->homepage);
+			printf("Official name: %s\n", he->h_name);
+			printf("Alias name:\n");
+			for (int i = 0; he->h_aliases[i] != NULL; i++)
+			{
+				printf(" %s\n", he->h_aliases[i]);
+			}
+			break;
+		}
+		case 8:
+		{
+			if (!user)
+			{
+				puts("Account is not sign in");
+				break;
+			}
+			struct hostent *he;
+			struct in_addr **addr_list;
+			he = gethost(user->homepage, 2);
+			if (he == (void *)1)
+			{
+				puts("Wrong domain name format");
+				break;
+			}
+			if (he == NULL)
+			{
+				puts("Not found information");
+				break;
+			}
+			printf("Info of domain name %s:\n", user->homepage);
+			printf("Official IP: %s\n", inet_ntoa(*(struct in_addr *)he->h_addr));
+			printf("Alias IP:\n");
+			addr_list = (struct in_addr **)he->h_addr_list;
+			for (int i = 1; addr_list[i] != NULL; i++)
+			{
+				printf("%s\n", inet_ntoa(*addr_list[i]));
+			}
+			break;
+		}
 		default:
 			freeUserList(list);
 			free_dllist(list);
@@ -285,4 +367,21 @@ char *prompt(char *message)
 		}
 	} while (strlen(result) == 0 || ptr);
 	return strdup(result);
+}
+struct hostent *gethost(char *str, int mode)
+{
+	struct in_addr addr;
+	int check = inet_aton(str, &addr);
+	if ((check && mode == 2) || (!check && mode == 1))
+	{
+		return (void *)1;
+	}
+	if (mode == 2)
+	{
+		return gethostbyname(str);
+	}
+	else
+	{
+		return gethostbyaddr(&addr, sizeof(addr), AF_INET);
+	}
 }

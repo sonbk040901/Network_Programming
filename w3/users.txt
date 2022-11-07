@@ -1,10 +1,5 @@
-user1 pass1 1
-user2 pass2 0
-user3 pass3 1
-user4 pass4 1
-user5 pass5 2
-user6 pass6 1
-user7 pass7 0
-user8 pass8 0
-user9 pass9 0
-sonle 1234567 1
+user1 pass1 1 google.com
+user2 pass2 0 facebook.com
+user3 pass3 1 tiktok.com
+user4 pass4 1 172.217.24.78
+user5 pass5 2 google.com

@@ -1,10 +1,11 @@
 #include "user.h"
 
-User newUser(char *username, char *password, Status status)
+User newUser(char *username, char *password, char *homepage, Status status)
 {
     User user = malloc(sizeof(struct user));
     user->username = strdup(username);
     user->password = strdup(password);
+    user->homepage = strdup(homepage);
     user->status = status;
     return user;
 }
@@ -29,6 +30,7 @@ void freeUser(User user)
 {
     free(user->username);
     free(user->password);
+    free(user->homepage);
     free(user);
 }
 
@@ -51,7 +53,7 @@ Dllist makUsersList(char *filename)
     }
     while (get_line(is) >= 0)
     {
-        dll_append(list, new_jval_v(newUser(is->fields[0], is->fields[1], atoi(is->fields[2]))));
+        dll_append(list, new_jval_v(newUser(is->fields[0], is->fields[1], is->fields[3], atoi(is->fields[2]))));
     }
     jettison_inputstruct(is);
     return list;
@@ -74,7 +76,7 @@ void addUser(Dllist list, User user)
 {
     dll_append(list, new_jval_v(user));
 }
-void export(Dllist list, char *filename)
+void exportFile(Dllist list, char *filename)
 {
     Dllist temp;
     FILE *fout = fopen(filename, "w+");
@@ -82,7 +84,7 @@ void export(Dllist list, char *filename)
     {
         User user = (User)jval_v(dll_val(temp));
         // printf("User: %s %s %d\n", user->username, user->password, user->status);
-        fprintf(fout, "%s %s %d", user->username, user->password, user->status);
+        fprintf(fout, "%s %s %d %s", user->username, user->password, user->status, user->homepage);
         if (temp != dll_last(list))
         {
             fprintf(fout, "\n");

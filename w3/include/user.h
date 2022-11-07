@@ -22,23 +22,23 @@ typedef struct user
     char *username;
     char *password;
     Status status;
+    char *homepage;
 } * User;
+User newUser(char *username, char *password, char *homepage, Status status); // done
+void blockUser(User user);                                                   // done
+void activeUser(User user);                                                  // done
+void setPassword(User user, char *password);                                 // done
+Status getUserStatus(User user);                                             // done
+char *getUserName(User user);                                                // done
+char *getUserPassword(User user);                                            // done
+void freeUser(User user);                                                    // done
 
-User newUser(char *username, char *password, Status status);
-void blockUser(User user);
-void activeUser(User user);
-void setPassword(User user, char *password);
-Status getUserStatus(User user);
-char *getUserName(User user);
-char *getUserPassword(User user);
-void freeUser(User user);
-
-Dllist makUsersList(char *filename);
-User existsUser(Dllist list, char *username);
-void addUser(Dllist list, User user);
-void export(Dllist list, char *filename);
-void freeUserList(Dllist list);
-int activate(User user, char *activationCode);
-User verify(Dllist list, char *username, char *password);
-int checkPassword(User user, char *password);
+Dllist makUsersList(char *filename);                      // done
+User existsUser(Dllist list, char *username);             // done
+void addUser(Dllist list, User user);                     // done
+void exportFile(Dllist list, char *filename);             // done
+void freeUserList(Dllist list);                           // done
+int activate(User user, char *activationCode);            // done
+User verify(Dllist list, char *username, char *password); // done
+int checkPassword(User user, char *password);             // done
 #endif
