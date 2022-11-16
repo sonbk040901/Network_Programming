@@ -11,15 +11,15 @@ struct hostent *gethost(char *str, int mode);
 
 int main(int argc, char *argv[])
 {
-	if (argc < 3 || strlen(argv[1]) != 1 || !isdigit(argv[1][0]) || (atoi(argv[1]) != 1 && atoi(argv[1]) != 2))
+	if (argc != 3 || strlen(argv[1]) != 1 || !isdigit(argv[1][0]) || (atoi(argv[1]) != 1 && atoi(argv[1]) != 2))
 	{
 		puts("Wrong parameter");
 		exit(1);
 	}
 	struct hostent *he;
 	struct in_addr **addr_list;
-	int type = atoi(argv[1]);
-	he = gethost(argv[2], type);
+	int mode = atoi(argv[1]);
+	he = gethost(argv[2], mode);
 	if (he == (void *)1)
 	{
 		puts("Wrong parameter");
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 		puts("Not found information");
 		exit(1);
 	}
-	if (type == 2)
+	if (mode == 2)
 	{
 		printf("Official IP: %s\n", inet_ntoa(*(struct in_addr *)he->h_addr));
 		printf("Alias IP:\n");
