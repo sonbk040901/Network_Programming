@@ -12,7 +12,7 @@ CFLAGS	:= -Wall -Wextra -g
 # define library paths in addition to /usr/lib
 #   if I wanted to include libraries not in /usr/lib I'd specify
 #   their path using -Lpath, something like:
-LFLAGS = 
+LFLAGS = lib/libj.a
 
 # define output directory
 OUTPUT	:= output
@@ -89,3 +89,16 @@ clean:
 run: all
 	./$(OUTPUTMAIN)
 	@echo Executing 'run: all' complete!
+
+app: server client
+	@echo Compiling 'server client' complete!
+server: server.o
+	gcc -Wall -Wextra -g -Iinclude -o src/UDPServer src/UDPServer.o lib/libj.a -Llib
+	@echo Compiling 'server' complete!
+server.o:
+	gcc -Wall -Wextra -g -Iinclude -c src/UDPServer.c  -o src/UDPServer.o
+client: client.o
+	gcc -Wall -Wextra -g -Iinclude -o src/UDPClient src/UDPClient.o lib/libj.a -Llib
+	@echo Compiling 'client' complete!
+client.o:
+	gcc -Wall -Wextra -g -Iinclude -c src/UDPClient.c  -o src/UDPClient.o
