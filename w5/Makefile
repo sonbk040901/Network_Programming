@@ -89,3 +89,15 @@ clean:
 run: all
 	./$(OUTPUTMAIN)
 	@echo Executing 'run: all' complete!
+app: server client
+	@echo Compiling 'server client' complete!
+server: server.o
+	gcc -Wall -Wextra -g -Iinclude -o src/TCPServer src/TCPServer.o lib/libj.a -Llib
+	@echo Compiling 'server' complete!
+server.o:
+	gcc -Wall -Wextra -g -Iinclude -c src/TCPServer.c  -o src/TCPServer.o
+client: client.o
+	gcc -Wall -Wextra -g -Iinclude -o src/TCPClient src/TCPClient.o lib/libj.a -Llib
+	@echo Compiling 'client' complete!
+client.o:
+	gcc -Wall -Wextra -g -Iinclude -c src/TCPClient.c  -o src/TCPClient.o

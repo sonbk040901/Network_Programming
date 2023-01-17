@@ -1,7 +1,7 @@
-user1 pass1 1
+user1 pass1 0
 user2 pass2 0
 user3 pass3 0
-user4 pass4 1
+user4 pass4 0
 user5 pass5 1
 user6 pass6 1
 user7 pass7 0

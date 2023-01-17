@@ -1,0 +1,10 @@
+user1 3
+user2 3
+user3 3
+user4 3
+user5 0
+user6 0
+user7 3
+user8 3
+user9 3
+sonle 0
