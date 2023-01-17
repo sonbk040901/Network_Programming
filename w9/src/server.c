@@ -70,7 +70,7 @@ int main(int argc, char const *argv[])
             if (fds[0].revents & POLLIN) // if parentfd is ready to read -aka- new client
             {
                 childfd = accept(parentfd, (struct sockaddr *)&clientaddr, &clientlen);
-                printf("\nNew client connected from %s:%d", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port);
+                printf("\nNew client connected from %s:%d", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
                 if (childfd < 0)
                 {
                     error("\nError on accept: ");
